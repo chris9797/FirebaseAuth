@@ -22,12 +22,12 @@
             android:layout_height="wrap_content" />
 
         <EditText
-            android:layout_margin="15dp"
-            android:inputType="textPassword"
-            android:hint="Enter Your Password"
-            android:id="@+id/editTextPassword"
+            android:id="@+id/editTxtPassword"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:hint="Enter Your Password"
+            android:inputType="textPassword" />
 
         <Button
             android:layout_margin="15dp"
