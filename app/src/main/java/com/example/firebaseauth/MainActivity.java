@@ -9,6 +9,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +18,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -24,9 +29,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText   editTextPassword;
     private TextView textViewSignin;
 
+    private DatabaseReference databaseReference;
+
+
+
     private ProgressDialog progressDialog;
 
     private FirebaseAuth firebaseAuth;
+
+    RadioGroup radioGroup;
+    RadioButton radioButton;
+    TextView textView;
 
 
     @Override
@@ -34,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        radioGroup = findViewById(R.id.id_radioGroup);
+
+        textView = findViewById(R.id.id_Select);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -42,6 +58,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             finish();
             startActivity(new Intent(getApplicationContext(),ProfileActivity.class));
         }
+
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+
+
 
         progressDialog = new ProgressDialog(this);
 
@@ -90,15 +110,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             //we will start profile acticity here
                             //only toast
                             if (firebaseAuth.getCurrentUser() != null) {
-
                                 finish();
                                 startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
-                            } else {
-                                Toast.makeText(MainActivity.this, "Registeration Failed", Toast.LENGTH_SHORT).show();
                             }
-                            progressDialog.dismiss();
+                        }else {
+                            Toast.makeText(MainActivity.this, "Registeration Failed", Toast.LENGTH_SHORT).show();
                         }
+                        progressDialog.dismiss();
                 }});
+
+    }
+
+    private void saveusertype(){
+        int radioId = radioGroup.getCheckedRadioButtonId();
+
+        radioButton = findViewById(radioId);
+
+        String type = radioButton.getText().toString().trim();
+
+        usertype usertype1 = new usertype(type);
+
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+
+        databaseReference.child(user.getUid()).setValue(usertype1);
 
     }
 
@@ -116,3 +150,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 }
+

@@ -36,6 +36,35 @@
             android:id="@+id/editTextPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/id_Select"
+            android:layout_margin="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Register as a Doctor or a Patient"
+            android:textSize="19dp"/>
+        <RadioGroup
+            android:id="@+id/id_radioGroup"
+            android:layout_marginLeft="60dp"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:textSize="19dp"
+                android:id="@+id/id_buttonDoc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Doctor"
+                android:layout_marginRight="60dp"
+                android:checked="true" />
+            <RadioButton
+                android:textSize="19dp"
+                android:id="@+id/id_buttonPat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Patient" />
+        </RadioGroup>
 
         <Button
             android:layout_margin="15dp"
@@ -43,6 +72,8 @@
             android:text="Register User"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+
         <TextView
             android:textAlignment="center"
             android:text="Already Registered? Go to Sign In"
