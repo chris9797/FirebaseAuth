@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -17,19 +16,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
-
-public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
+public class Doctor extends AppCompatActivity implements View.OnClickListener {
+    private String utype;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-    private TextView textViewUserEmail;
+    private TextView type;
     private Button buttonLogout;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_patient);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -38,19 +34,39 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             startActivity(new Intent(this, LoginActivity.class));
         }
 
-        FirebaseUser user = firebaseAuth.getCurrentUser();
-
-        textViewUserEmail = (TextView) findViewById(R.id.textViewUserEmail);
-
-
-        Toast.makeText(this, databaseReference.child(user.getUid()).getKey(), Toast.LENGTH_SHORT).show();
-
-        String key = databaseReference.child(user.getUid()).getKey();
-
         buttonLogout = (Button) findViewById(R.id.buttonLogout);
 
         buttonLogout.setOnClickListener(this);
+    }
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        final FirebaseUser user = firebaseAuth.getCurrentUser();
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot TypeSnapshot : dataSnapshot.getChildren()){
+
+                    utype = TypeSnapshot.child(user.getUid()).getValue().toString();
+
+                    utype = utype.replace("{type=","");
+
+                    utype = utype.replace("}","");
+
+                }
+
+                type = (TextView) findViewById(R.id.type);
+                type.setText("Welcome "+utype);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override

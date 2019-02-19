@@ -17,6 +17,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
@@ -93,7 +99,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                             //start profile activity
                             finish();
-                            startActivity(new Intent(getApplicationContext(),ProfileActivity.class));
+                            usertyp();
                             Toast.makeText(LoginActivity.this,"Login Successful...", Toast.LENGTH_SHORT).show();
                         }
                         else{
@@ -101,6 +107,39 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         }
                     }
                 });
+    }
+
+    private void usertyp() {
+        final FirebaseUser user = firebaseAuth.getCurrentUser();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot TypeSnapshot : dataSnapshot.getChildren()){
+
+                    String utype = TypeSnapshot.child(user.getUid()).getValue().toString();
+
+                    utype = utype.replace("{type=","");
+
+                    utype = utype.replace("}","");
+
+                    if(utype.equals("Patient")) {
+                        startActivity(new Intent(getApplicationContext(), Patient.class));
+                    }
+                    else {
+                        startActivity(new Intent(getApplicationContext(), Doctor.class));
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
     @Override
     public void onClick(View view) {
